@@ -9,23 +9,8 @@ class RemoteInspector(BaseInspector):
         self.object = object
 
     def _source(self):
-        object_name = self.object.__name__
-        for x in our_ipc_read():
-            x = x.strip()
-            i = x.find('def ')
-            if i == -1:
-                continue
-            name = x[i + 4:]
-            name = name.split(':', maxsplit=1)[0]
-            name = name.split('(', maxsplit=1)[0]
-            name = name.strip()
-            if name == object_name:
-                return x
-        else:
-            raise NameError(
-                    f'Could not find source for {object_name}!\n'
-                    'Currently `sourceinspect` is only able to inspect'
-                    'source of functions yet, sorry!')
+        from .code import find_interactive_source
+        return find_interactive_source(self.object, our_ipc_read())
 
 
 def their_ipc_stub(source):
@@ -74,4 +59,5 @@ def hack(globals):
         return old_runsource(self, source, *args, **kwargs)
 
     #print('[SourceInspect] Starting...')
+    new_runsource._is_remote_hook = 1
     globals['InteractiveInterpreter'].runsource = new_runsource
