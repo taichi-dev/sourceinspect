@@ -9,14 +9,14 @@ class RemoteInspector(BaseInspector):
         self.object = object
 
         from .code import find_interactive_source
-        prox = find_interactive_source(self.object, our_ipc_read())
-        self.__dict__.update(prox)
+        self.__dict__.update(
+                find_interactive_source(self.object, our_ipc_read()))
 
 
 def their_ipc_stub(source):
     #print('[SourceInspect] IPC stub got:', source)
 
-    file = 'SI_' + str(os.getpid())
+    file = 'SourceInspect_' + str(os.getpid())
     file = os.path.join(tempfile.gettempdir(), file)
     with open(file, 'a') as f:
             f.write('===\n' + source + '\n')
@@ -27,7 +27,7 @@ def their_ipc_stub(source):
 
 
 def our_ipc_read():
-    file = 'SI_' + str(os.getppid())
+    file = 'SourceInspect_' + str(os.getppid())
     file = os.path.join(tempfile.gettempdir(), file)
     try:
         with open(file, 'r') as f:

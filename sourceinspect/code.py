@@ -1,4 +1,4 @@
-from . import BasicInspector
+from . import BaseInspector
 
 
 source_lines = []
@@ -42,14 +42,13 @@ def find_interactive_source(object, lines=source_lines):
     #        'of functions in interactive shells yet, sorry!')
 
 
-class CodeInspector(BasicInspector):
+class CodeInspector(BaseInspector):
     def __init__(self, object):
         self.object = object
 
         import dill.source
         self.inspect = dill.source
-        self.__dict__.update(
-                find_interactive_source(self.object, our_ipc_read()))
+        self.__dict__.update(find_interactive_source(self.object))
 
 
 hack(__import__('code'))
