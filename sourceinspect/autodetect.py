@@ -2,10 +2,11 @@ def get_inspector():
     from . import IPythonInspector, RemoteInspector, BlenderInspector, DillInspector
     import sys
 
-    if hasattr(__builtins__, '__IPYTHON__'):
+    try:
+        get_ipython()
         return IPythonInspector
-    if hasattr(__builtins__, 'get_ipython'):
-        return IPythonInspector
+    except NameError:
+        pass
 
     if 'idlelib' in sys.modules:  # IDLE use code.py in seperate process
         return RemoteInspector
