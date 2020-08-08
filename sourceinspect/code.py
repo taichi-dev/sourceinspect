@@ -45,9 +45,6 @@ def find_interactive_source(object, lines=source_lines):
 class CodeInspector(BaseInspector):
     def __init__(self, object):
         self.object = object
-
-        import dill.source
-        self.inspect = dill.source
         self.__dict__.update(find_interactive_source(self.object))
 
 

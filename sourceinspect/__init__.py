@@ -42,7 +42,7 @@ class BaseInspector:
     @classmethod
     def getsourcelines(Inspect, object):
         ins = Inspect(object)
-        lines = [_ + '\n' for _ in ins.source.split('\n')]
+        lines = [_ + '\n' for _ in ins.source.splitlines()]
         return lines, ins.lineno
 
 

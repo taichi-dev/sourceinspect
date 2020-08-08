@@ -7,7 +7,6 @@ import os
 class RemoteInspector(BaseInspector):
     def __init__(self, object):
         self.object = object
-
         from .code import find_interactive_source
         self.__dict__.update(
                 find_interactive_source(self.object, our_ipc_read()))

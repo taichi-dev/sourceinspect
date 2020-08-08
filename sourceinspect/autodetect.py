@@ -1,5 +1,5 @@
 def get_inspector():
-    from . import IPythonInspector, RemoteInspector, CodeInspector, DillInspector
+    from . import IPythonInspector, RemoteInspector, BlenderInspector, DillInspector
     import sys
 
     if hasattr(__builtins__, '__IPYTHON__'):
@@ -11,6 +11,6 @@ def get_inspector():
         return RemoteInspector
 
     if 'bpy' in sys.modules:      # Blender use code.py in same process
-        return CodeInspector
+        return BlenderInspector
 
     return DillInspector
