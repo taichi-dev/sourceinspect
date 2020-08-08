@@ -6,10 +6,10 @@ class BaseInspector:
         raise NotImplementedError
 
     def _lineno(self):
-        raise NotImplementedError
+        return 3
 
     def _file(self):
-        raise NotImplementedError
+        return '<module>'
 
     @property
     def source(self):
@@ -64,6 +64,7 @@ class BasicInspector(BaseInspector):
 from .builtin import BuiltinInspector
 from .ipython import IPythonInspector
 from .remote import RemoteInspector
+from .code import CodeInspector
 from .dill import DillInspector
 from .autodetect import get_inspector
 
@@ -85,6 +86,7 @@ __all__ = [
     'BuiltinInspector',
     'IPythonInspector',
     'RemoteInspector',
+    'CodeInspector',
     'DillInspector',
     'get_inspector',
 ]

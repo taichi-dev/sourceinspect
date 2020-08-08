@@ -27,12 +27,6 @@ class RemoteInspector(BaseInspector):
                     'Currently `sourceinspect` is only able to inspect'
                     'source of functions yet, sorry!')
 
-    def _lineno(self):
-        return 3
-
-    def _file(self):
-        return '<remote>'
-
 
 def their_ipc_stub(source):
     #print('[SourceInspect] IPC stub got:', source)
@@ -71,9 +65,9 @@ to file "{__import__("code").__file__}".
 
 
 def hack(globals):
+    import functools
     old_runsource = globals['InteractiveInterpreter'].runsource
 
-    import functools
     @functools.wraps(old_runsource)
     def new_runsource(self, source, *args, **kwargs):
         their_ipc_stub(source)

@@ -8,7 +8,10 @@ def get_inspector():
         return IPythonInspector
 
     import sys
-    if 'idlelib' in sys.modules:
+    if 'idlelib' in sys.modules:  # IDLE use code.py in seperate process
         return RemoteInspector
+
+    if 'bpy' in sys.modules:      # Blender use code.py in same process
+        return CodeInspector
 
     return DillInspector
