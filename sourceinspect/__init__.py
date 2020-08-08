@@ -61,12 +61,14 @@ class BasicInspector(BaseInspector):
         return self.inspect.getsourcefile(self.object)
 
 
-from .builtin import BuiltinInspector
-from .ipython import IPythonInspector
-from .remote import RemoteInspector
-from .code import CodeInspector
-from .dill import DillInspector
 from .autodetect import get_inspector
+
+from .std import StdInspector
+from .dill import DillInspector
+from .code import CodeInspector
+from .remote import RemoteInspector
+from .ipython import IPythonInspector
+from .blender import BlenderInspector
 
 
 def getsource(object):

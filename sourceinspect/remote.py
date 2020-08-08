@@ -8,9 +8,9 @@ class RemoteInspector(BaseInspector):
     def __init__(self, object):
         self.object = object
 
-    def _source(self):
         from .code import find_interactive_source
-        return find_interactive_source(self.object, our_ipc_read())
+        prox = find_interactive_source(self.object, our_ipc_read())
+        self.__dict__.update(prox)
 
 
 def their_ipc_stub(source):
@@ -43,7 +43,7 @@ def get_error_message():
     return f'''
 To make RemoteInspector functional, please append the following line:
 
-    __import__("sourceinspect").remote.hack(globals())')
+    __import__("sourceinspect.remote").remote.hack(globals())')
 
 to file "{__import__("code").__file__}".
 '''

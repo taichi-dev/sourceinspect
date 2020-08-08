@@ -28,10 +28,13 @@ def find_interactive_source(object, lines=source_lines):
         name = name.split('(', maxsplit=1)[0]
         name = name.strip()
         if name == object.__name__:
-            return x
+            return {'_source': lambda: x}
 
     from . import DillInspector
-    return DillInspector.getsource(object)
+    proxy = DillInspector(object)
+    return {'_source': lambda: proxy.source,
+            '_lineno': lambda: proxy.lineno,
+            '_file': lambda: proxy.file}
 
     #raise NameError(
     #        f'Could not find source for object "{object.__name__}"!\n'
@@ -45,9 +48,8 @@ class CodeInspector(BasicInspector):
 
         import dill.source
         self.inspect = dill.source
-
-    def _source(self):
-        return find_interactive_source(self.object)
+        self.__dict__.update(
+                find_interactive_source(self.object, our_ipc_read()))
 
 
 hack(__import__('code'))

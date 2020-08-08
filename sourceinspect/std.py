@@ -1,7 +1,7 @@
 from . import BasicInspector
 
 
-class BuiltinInspector(BasicInspector):
+class StdInspector(BasicInspector):
     def __init__(self, object):
         self.object = object
 
