@@ -2,17 +2,32 @@ class BaseInspector:
     def __init__(self, object):
         self.object = object
 
+    def _source(self):
+        raise NotImplementedError
+
+    def _lineno(self):
+        raise NotImplementedError
+
+    def _file(self):
+        raise NotImplementedError
+
     @property
     def source(self):
-        raise NotImplementedError
+        ret = self._source()
+        self.__dict__['source'] = ret
+        return ret
 
     @property
     def lineno(self):
-        raise NotImplementedError
+        ret = self._lineno()
+        self.__dict__['lineno'] = ret
+        return ret
 
     @property
     def file(self):
-        raise NotImplementedError
+        ret = self._file()
+        self.__dict__['file'] = ret
+        return ret
 
     @classmethod
     def getsource(Inspect, object):
@@ -36,45 +51,40 @@ class BasicInspector(BaseInspector):
         self.object = object
         self.inspect = inspect
 
-    def getsource(self):
+    def _source(self):
         return self.inspect.getsource(self.object)
 
-    def getlineno(self):
+    def _lineno(self):
         return self.inspect.getsourcelines(self.object)[1]
 
-    def getfile(self):
+    def _file(self):
         return self.inspect.getsourcefile(self.object)
-
-    @property
-    def source(self):
-        ret = self.getsource()
-        self.__dict__['source'] = ret
-        return ret
-
-    @property
-    def lineno(self):
-        ret = self.getlineno()
-        self.__dict__['lineno'] = ret
-        return ret
-
-    @property
-    def file(self):
-        ret = self.getfile()
-        self.__dict__['file'] = ret
-        return ret
 
 
 from .builtin import BuiltinInspector
 from .ipython import IPythonInspector
+from .remote import RemoteInspector
 from .dill import DillInspector
-from .code import CodeInspector
 from .autodetect import get_inspector
 
 
+def getsource(object):
+    return get_inspector().getsource(object)
+
+def getsourcelines(object):
+    return get_inspector().getsourcelines(object)
+
+def getsourcefile(object):
+    return get_inspector().getsourcefile(object)
+
+
 __all__ = [
+    'getsource',
+    'getsourcelines',
+    'getsourcefile',
     'BuiltinInspector',
     'IPythonInspector',
+    'RemoteInspector',
     'DillInspector',
-    'CodeInspector',
     'get_inspector',
 ]

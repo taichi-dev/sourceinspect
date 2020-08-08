@@ -8,9 +8,9 @@ class IPythonInspector(BasicInspector):
         import IPython
         self.inspect = IPython.core.oinspect
 
-    def getlineno(self):
+    def _lineno(self):
         return self.inspect.find_source_lines(self.object)
 
-    def getfile(self):
+    def _file(self):
         lineno = self.getlineno()
         return f'<IPython:{lineno}>'
