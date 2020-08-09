@@ -1,6 +1,17 @@
 from . import BaseInspector
 
 
+def get_blender_text(file):
+    if file.startswith('/') and file.count('/') == 1:
+        return file[1:]      # untitled blender file, "/Text"
+
+    i = file.rfind('.blend/')
+    if i != -1:
+        return file[i + 7:]  # saved blender file, "hello.blend/Text"
+
+    return None
+
+
 def find_blender_source(object):
     import inspect
 
@@ -19,12 +30,12 @@ def find_blender_source(object):
         import bpy
         import os
 
-        ret = old_getfile(object)
-        is_blender = ret.startswith('/') and ret.count('/') == 1
-        if not is_blender:
-            return ret
+        file = old_getfile(object)
+        blender_text = get_blender_text(file)
+        if blender_text is None:
+            return file
 
-        content = bpy.data.texts[ret[1:]].as_string()
+        content = bpy.data.texts[blender_text].as_string()
         try:
             return new_getfile._si_cache[content]
         except KeyError:
