@@ -15,7 +15,7 @@ class RemoteInspector(BaseInspector):
 def their_ipc_stub(source):
     #print('[SourceInspect] IPC stub got:', source)
 
-    file = 'SourceInspect_' + str(os.getpid())
+    file = '.SI_IPC_' + str(os.getpid())
     file = os.path.join(tempfile.gettempdir(), file)
     with open(file, 'a') as f:
             f.write('===\n' + source + '\n')
@@ -26,7 +26,7 @@ def their_ipc_stub(source):
 
 
 def our_ipc_read():
-    file = 'SourceInspect_' + str(os.getppid())
+    file = '.SI_IPC_' + str(os.getppid())
     file = os.path.join(tempfile.gettempdir(), file)
     try:
         with open(file, 'r') as f:

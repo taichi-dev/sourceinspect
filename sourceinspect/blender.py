@@ -1,11 +1,12 @@
 from . import BaseInspector
 
 
-def get_blender_text(file):
-    if file.startswith('/') and file.count('/') == 1:
+def get_blender_text_name(file):
+    import os
+    if file.startswith(os.path.sep) and file.count(os.path.sep) == 1:
         return file[1:]      # untitled blender file, "/Text"
 
-    i = file.rfind('.blend/')
+    i = file.rfind('.blend' + os.path.sep)
     if i != -1:
         return file[i + 7:]  # saved blender file, "hello.blend/Text"
 
@@ -31,7 +32,7 @@ def find_blender_source(object):
         import os
 
         file = old_getfile(object)
-        blender_text = get_blender_text(file)
+        blender_text = get_blender_text_name(file)
         if blender_text is None:
             return file
 
@@ -41,7 +42,8 @@ def find_blender_source(object):
         except KeyError:
             pass
 
-        fd, name = tempfile.mkstemp(prefix='SI_Blender_')
+        suffix = '_' + blender_text
+        fd, name = tempfile.mkstemp(prefix='.SI_blender_', suffix=suffix)
         os.close(fd)
         with open(name, 'w') as f:
             f.write(content)
