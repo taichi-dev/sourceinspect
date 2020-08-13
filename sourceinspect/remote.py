@@ -42,7 +42,7 @@ def get_error_message():
     return f'''
 To make RemoteInspector functional, please append the following line:
 
-    __import__("sourceinspect.remote").remote.hack(globals())')
+    __import__("sourceinspect.remote").remote.hack(globals())
 
 to file "{__import__("code").__file__}".
 '''
