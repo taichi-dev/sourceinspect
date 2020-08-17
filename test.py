@@ -1,6 +1,6 @@
-import sourceinspect
+import sourceinspect as si
 
 def func():
     pass
 
-print(sourceinspect.getsourcelines(func))
+si.getsource(func)

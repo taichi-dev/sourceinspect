@@ -1,14 +1,10 @@
 import tempfile
-import inspect
 import atexit
 import sys
 import os
 
 
-
 def their_ipc_stub(source):
-    #print('[SourceInspect] IPC stub got:', source)
-
     file = 'SI_IPC_' + str(os.getpid()) + '.py'
     file = os.path.join(tempfile.gettempdir(), file)
     with open(file, 'a') as f:
@@ -25,9 +21,17 @@ def remote_getfile(object):
     file = 'SI_IPC_' + str(os.getppid()) + '.py'
     file = os.path.join(tempfile.gettempdir(), file)
     if not os.path.exists(file):
-        raise IOError(get_error_message())
+        message = get_error_message()
+        print(message)
+        raise IOError(message)
+
     with open(file, 'r') as f:
         content = f.read()
+
+    try:
+        return remote_getfile._si_cache[content]
+    except KeyError:
+        pass
 
     fd, name = tempfile.mkstemp(prefix='SI_IDLE_', suffix='.py')
     os.close(fd)
@@ -36,6 +40,7 @@ def remote_getfile(object):
 
     atexit.register(os.unlink, name)
     remote_getfile._si_cache[content] = name
+
     return name
 
 remote_getfile._si_cache = {}
@@ -63,6 +68,5 @@ def hack(globals):
         their_ipc_stub(source)
         return old_runsource(self, source, *args, **kwargs)
 
-    #print('[SourceInspect] Starting...')
     new_runsource._is_remote_hook = 1
     globals['InteractiveInterpreter'].runsource = new_runsource

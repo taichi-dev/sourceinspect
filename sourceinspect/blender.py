@@ -3,7 +3,6 @@ import inspect
 import atexit
 import os
 
-
 def get_blender_text_name(file):
     import os
     if file.startswith(os.path.sep) and file.count(os.path.sep) == 1:
