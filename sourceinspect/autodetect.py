@@ -1,17 +1,13 @@
-def get_inspector():
-    from . import IPythonInspector, RemoteInspector, BlenderInspector, DillInspector
-    import sys
+import sys
+import inspect
 
-    try:
-        get_ipython()
-        return IPythonInspector
-    except NameError:
-        pass
-
+def get_getfile():
     if 'idlelib' in sys.modules:  # IDLE use code.py in seperate process
-        return RemoteInspector
+        from .remote import remote_getfile
+        return remote_getfile
 
     if 'bpy' in sys.modules:      # Blender use code.py in same process
-        return BlenderInspector
+        from .blender import blender_getfile
+        return blender_getfile
 
-    return DillInspector
+    return None
