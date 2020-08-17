@@ -56,14 +56,15 @@ def test_blender():
     pyautogui.click(x=100, y=800)
     time.sleep(0.3)
 
-    for line in source.splitlines():
-        if line.startswith('    '):
-            pyautogui.typewrite('\b\b\b\b', interval=0.05)
-            time.sleep(0.06)
-        pyautogui.typewrite(line + '\n', interval=0.05)
-        time.sleep(0.3)
+    if 0:
+        for line in source.splitlines():
+            if line.startswith('    '):
+                pyautogui.typewrite('\b\b\b\b', interval=0.05)
+                time.sleep(0.06)
+            pyautogui.typewrite(line + '\n', interval=0.05)
+            time.sleep(0.3)
 
-    time.sleep(1)
+        time.sleep(1)
 
     pyautogui.click(x=1040, y=80)
     time.sleep(0.3)
@@ -81,9 +82,21 @@ def test_blender():
         last_line = line
 
     pyautogui.click(x=1200, y=80)
-    time.sleep(2)
+    time.sleep(1)
     pyautogui.click(x=1200, y=80)
-    time.sleep(2)
+    time.sleep(1)
+
+    pyautogui.hotkey('ctrl', 's')
+    time.sleep(0.8)
+    pyautogui.click(x=450, y=640)
+    time.sleep(0.8)
+    pyautogui.click(x=1510, y=935)
+    time.sleep(0.8)
+
+    pyautogui.click(x=1200, y=80)
+    time.sleep(1)
+    pyautogui.click(x=1200, y=80)
+    time.sleep(1)
 
     pyautogui.hotkey('alt', 'f4')
     time.sleep(0.2)
