@@ -1,4 +1,5 @@
 import tempfile
+import inspect
 import atexit
 import sys
 import os
@@ -10,40 +11,38 @@ def their_ipc_stub(source):
     with open(file, 'a') as f:
         if source[-1:] != '\n':
             source = source + '\n'
-        f.write(source)
+        f.write(source + '===\n')
 
     if not hasattr(their_ipc_stub, '_si_did'):
         their_ipc_stub._si_did = '_Did'
         atexit.register(os.unlink, file)
 
 
-def remote_getfile(object):
-    file = 'SI_IPC_' + str(os.getppid()) + '.py'
+def remote_findsource(object):
+    file = 'SI_IPC_' + str(os.getppid() if 'idlelib' in sys.modules else os.getpid()) + '.py'
     file = os.path.join(tempfile.gettempdir(), file)
     if not os.path.exists(file):
         message = get_error_message()
         print(message)
-        raise IOError(message)
+        raise IOError(f'Cannot find file {file}!' + message)
 
     with open(file, 'r') as f:
-        content = f.read()
+        lines = f.read()
 
-    try:
-        return remote_getfile._si_cache[content]
-    except KeyError:
-        pass
+    lines = lines.split('===\n')
+    for lnum, line in reversed(list(enumerate(lines))):
+        try:
+            name = line.split('def ', 1)[1]
+            name = name.split(':', 1)[0]
+            name = name.split('(', 1)[0]
+            if name == object.__name__:
+                break
+        except IndexError:
+            pass
+    else:
+        raise IOError(f'Cannot find source of object `{object.__name__}`')
 
-    fd, name = tempfile.mkstemp(prefix='SI_IDLE_', suffix='.py')
-    os.close(fd)
-    with open(name, 'w') as f:
-        f.write(content)
-
-    atexit.register(os.unlink, name)
-    remote_getfile._si_cache[content] = name
-
-    return name
-
-remote_getfile._si_cache = {}
+    return lines, lnum
 
 
 def get_error_message():
@@ -68,5 +67,4 @@ def hack(globals):
         their_ipc_stub(source)
         return old_runsource(self, source, *args, **kwargs)
 
-    new_runsource._is_remote_hook = 1
     globals['InteractiveInterpreter'].runsource = new_runsource
