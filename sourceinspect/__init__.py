@@ -177,7 +177,18 @@ def getsourcelines(object):
 
 def getsourcefile(object):
     with InspectMock():
-        return inspect.getsourcefile(object)
+        ret = inspect.getsourcefile(object)
+        if ret is None:  # Make Taichi happy
+            try:
+                ret = inspect.getfile(object)
+            except:
+                pass
+        return ret
+
+def getfile(object):
+    with InspectMock():
+        ret = inspect.getfile(object)
+        return ret
 
 
 __all__ = [
@@ -188,4 +199,5 @@ __all__ = [
     'getcomments',
     'getsourcelines',
     'getsourcefile',
+    'getfile',
 ]
